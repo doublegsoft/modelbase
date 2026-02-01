@@ -1,0 +1,39 @@
+
+list_view<
+
+  url: string,
+
+  start: int,
+
+  limit: int,
+
+  params: map,
+
+  container: widget,
+
+  calculate() {
+    amount += 100
+    status = 'A'
+    params.name = 'hello'
+    params.value = 200.2
+    params.value += amount
+    save@url ?params
+  },
+
+  refresh() {
+    start = 0
+    params.start = start
+  },
+
+  reload() {
+    start += limit
+    params.start = start
+    items = fetch@url ?params
+    render@container ?items
+  },
+
+  onClicked(ev: event) {
+
+  }
+
+>

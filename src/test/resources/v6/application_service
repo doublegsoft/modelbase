@@ -1,0 +1,10 @@
+@service
+sales_order_service<
+
+  complete() {
+    params.order_id!'订单标识'
+    params.status = 'A'
+    save@url?params
+  }
+
+>

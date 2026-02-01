@@ -1,0 +1,20 @@
+list_view<
+
+  url: string,
+
+  start: int,
+
+  limit: int,
+
+  params: map,
+
+  container: widget,
+
+  calculate() {
+    [0..items] {
+      b += 'B'
+      c += 'C'
+    }
+  }
+
+>
