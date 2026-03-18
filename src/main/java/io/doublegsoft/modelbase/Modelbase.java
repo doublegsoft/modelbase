@@ -204,8 +204,8 @@ public class Modelbase extends BaseErrorListener {
               ObjectType objectType = attr.getType();
               collType.setComponentType(objectType);
               attr.setType(collType);
-              if (ctxAttr.counted_attr_name != null) {
-                collType.setCountedName(ctxAttr.counted_attr_name.getText());
+              if (ctxAttr.counted_name != null) {
+                collType.setCountedName(ctxAttr.counted_name.getText());
               }
             }
           }
@@ -318,6 +318,9 @@ public class Modelbase extends BaseErrorListener {
       if (ctx.typebase_string().anybase_int() != null) {
         type.setLength(Integer.valueOf(ctx.typebase_string().anybase_int().getText()));
         attr.getConstraint().setMaxSize(Integer.valueOf(ctx.typebase_string().anybase_int().getText()));
+      }
+      if (ctx.typebase_string().length_name != null) {
+        type.setLengthName(ctx.typebase_string().length_name.getText());
       }
     } else if (ctx.typebase_code() != null) {
       PrimitiveType type = new PrimitiveType(PrimitiveType.STRING);
