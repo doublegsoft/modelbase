@@ -199,9 +199,14 @@ public class Modelbase extends BaseErrorListener {
           if (ctxAttr.typebase_anytype() != null) {
             // not relationship
             setObjectTypeAndConstraint(model, attr, ctxAttr.typebase_anytype(), decorator, false);
-            if (ctxAttr.counted_attr_name != null) {
-              CollectionType collType = (CollectionType) attr.getType();
-              collType.setCountedName(ctxAttr.counted_attr_name.getText());
+            if (ctxAttr.innerArray != null) {
+              CollectionType collType = new CollectionType("");
+              ObjectType objectType = attr.getType();
+              collType.setComponentType(objectType);
+              attr.setType(collType);
+              if (ctxAttr.counted_attr_name != null) {
+                collType.setCountedName(ctxAttr.counted_attr_name.getText());
+              }
             }
           }
           if (attr.isLabelled("system")) {
@@ -212,9 +217,6 @@ public class Modelbase extends BaseErrorListener {
           }
           if (attr.isLabelled("comment")) {
             attr.setText(attr.getLabelledOptions("comment").get("text"));
-          }
-          if (ctxAttr.innerType != null) {
-            // TODO
           }
         });
       }
@@ -323,9 +325,6 @@ public class Modelbase extends BaseErrorListener {
       if (ctx.typebase_code().anybase_int() != null) {
         type.setLength(Integer.valueOf(ctx.typebase_code().anybase_int().getText()));
         attr.getConstraint().setMaxSize(Integer.valueOf(ctx.typebase_code().anybase_int().getText()));
-      }
-      if (ctx.typebase_code().type != null) {
-        // TODO
       }
     } else if (ctx.typebase_id() != null) {
       PrimitiveType type = new PrimitiveType(PrimitiveType.STRING);
