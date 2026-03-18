@@ -199,6 +199,10 @@ public class Modelbase extends BaseErrorListener {
           if (ctxAttr.typebase_anytype() != null) {
             // not relationship
             setObjectTypeAndConstraint(model, attr, ctxAttr.typebase_anytype(), decorator, false);
+            if (ctxAttr.counted_attr_name != null) {
+              CollectionType collType = (CollectionType) attr.getType();
+              collType.setCountedName(ctxAttr.counted_attr_name.getText());
+            }
           }
           if (attr.isLabelled("system")) {
             attr.getConstraint().setSystem(true);
