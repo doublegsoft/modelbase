@@ -389,10 +389,11 @@ public class Modelbase extends BaseErrorListener {
       ctx.typebase_enum().typebase_keytext().forEach(kt -> {
 //        String key = kt.key1 == null ? kt.key2.getText() : kt.key1.getText();
         String key = kt.anybase_key().getText();
-        if (kt.name == null) {
-          attr.getConstraint().addCheckValue(new String[]{key, kt.text.getText()});
+        if (kt.text == null) {
+          attr.getConstraint().addCheckValue(new String[]{key, kt.name.getText()});
         } else {
-          attr.getConstraint().addCheckValue(new String[]{key, kt.text.getText(), kt.name.getText()});
+          int len = kt.text.getText().length();
+          attr.getConstraint().addCheckValue(new String[]{key, kt.name.getText(), kt.text.getText().substring(1, len - 1)});
         }
         type.setLength(Math.max(type.getLength(), key.length()));
       });
