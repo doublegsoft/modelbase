@@ -7,6 +7,14 @@ customer_archive<
   @name(label='联系人主键')
   id!!: long,
 
+  @persistence(name='constint')
+  @name(label='联系人主键')
+  constant_int: 2878483748,
+
+  @persistence(name='conststr')
+  @name(label='联系人主键')
+  constant_str: 常量ABC,
+
   @persistence(name='acctid')
   @name(label='关联客户账户(ID)')
   account: long,
@@ -133,7 +141,7 @@ customer_archive<
 
   @persistence(name='flag')
   @name(label='主联系人标识(用于系统默认展示)')
-  is_primary_flag: boolean,
+  is_primary_flag: string(2),
 
   @persistence(name='rem')
   @name(label='备注信息')

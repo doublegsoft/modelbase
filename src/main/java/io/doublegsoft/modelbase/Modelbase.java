@@ -24,12 +24,7 @@ import com.doublegsoft.jcommons.metabean.ModelDefinition;
 import com.doublegsoft.jcommons.metabean.ObjectDefinition;
 import com.doublegsoft.jcommons.metabean.RelationshipStyle;
 import com.doublegsoft.jcommons.metabean.ast.*;
-import com.doublegsoft.jcommons.metabean.type.AnonymousType;
-import com.doublegsoft.jcommons.metabean.type.CollectionType;
-import com.doublegsoft.jcommons.metabean.type.CustomType;
-import com.doublegsoft.jcommons.metabean.type.DomainType;
-import com.doublegsoft.jcommons.metabean.type.ObjectType;
-import com.doublegsoft.jcommons.metabean.type.PrimitiveType;
+import com.doublegsoft.jcommons.metabean.type.*;
 import io.doublegsoft.modelbase.ModelbaseParser.Anybase_stringContext;
 import io.doublegsoft.modelbase.ModelbaseParser.Modelbase_typesContext;
 import io.doublegsoft.modelbase.ModelbaseParser.Typebase_anytypeContext;
@@ -436,6 +431,12 @@ public class Modelbase extends BaseErrorListener {
         AttributeDefinition attrInAnonymous = new AttributeDefinition(ctxAttr.typebase_anybase_id(0).getText(), objAsType);
         setObjectTypeAndConstraint(model, attrInAnonymous, ctxAttr.typebase_anytype(), "", isProcessingBx);
       });
+    } else if (ctx.typebase_native() != null) {
+      attr.setType(new ConstantType(ctx.typebase_native().getText()));
+      attr.getConstraint().setDomainType(new DomainType(ctx.getText()));
+    } else if (ctx.typebase_version() != null) {
+      attr.setType(new ConstantType(ctx.typebase_version().getText()));
+      attr.getConstraint().setDomainType(new DomainType(ctx.getText()));
     } else {
       attr.setType(new DomainType(ctx.getText()));
       attr.getConstraint().setDomainType(new DomainType(ctx.getText()));
