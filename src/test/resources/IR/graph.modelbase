@@ -1,0 +1,42 @@
+@entity
+@persistence(name='tn_sys_node')
+@name(label='节点', plural='nodes')
+node<
+
+  @persistence(name='ndid')
+  @name(label='节点标识')
+  id!!: long,
+
+  @persistence(name='ndnm')
+  @name(label='节点名称')
+  name: string(100)
+>
+
+@entity
+@persistence(name='tn_sys_conn')
+@name(label='连接', plural='connections')
+connection<
+
+  @persistence(name='previd')
+  @name(label='前置节点')
+  @eager
+  prev!!: &node(id),
+
+  @persistence(name='currid')
+  @name(label='当前节点')
+  @eager
+  curr!!: &node(id),
+
+  @persistence(name='nextid')
+  @name(label='后置节点')
+  @eager
+  next!!: &node(id),
+
+  @persistence(name='trig')
+  @name(label='触发器')
+  trigger: string(100),
+
+  @persistence(name='nextid')
+  @name(label='状态变化')
+  status_change: string(100)
+>

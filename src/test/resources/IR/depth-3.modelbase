@@ -1,0 +1,77 @@
+@persistence(name='tn_sys_person')
+@name(label='球队', plural='persons')
+person<
+
+  @persistence(name='persid')
+  @name(label='人员标识')
+  id!!: long,
+
+  @persistence(name='persnm')
+  @name(label='姓名')
+  name: string(100),
+
+  @persistence(name='gend')
+  @name(label='性别')
+  gender: string(2)
+
+>
+
+@persistence(name='tn_sys_acct')
+@name(label='账户', plural='accounts')
+account<
+
+  @persistence(name='acctid')
+  @name(label='账户标识')
+  id!!: long,
+
+  @persistence(name='acctnm')
+  @name(label='账户号')
+  account_number: string(100),
+
+  @persistence(name='persid')
+  @name(label='性别')
+  @eager
+  person: &person(id)
+>
+
+@persistence(name='tn_sys_serv')
+@name(label='服务', plural='services')
+service<
+
+  @persistence(name='servid')
+  @name(label='服务标识')
+  id!!: long,
+
+  @persistence(name='servtypid')
+  @name(label='服务类型')
+  @eager
+  service_type: &service_type(id),
+
+  @persistence(name='acctid')
+  @name(label='关联账户')
+  @eager
+  account: &account(id),
+
+  @persistence(name='crttm')
+  @name(label='创建时间')
+  @eager
+  created_time: datetime
+>
+
+@persistence(name='tn_sys_servtyp')
+@name(label='服务类型', plural='service_types')
+service_type<
+
+  @persistence(name='servid')
+  @name(label='服务标识')
+  id!!: long,
+
+  @persistence(name='servcd')
+  @name(label='服务编码')
+  code: string(100),
+
+  @persistence(name='servtyp')
+  @name(label='服务类型名称')
+  name: string(100)
+>
+

@@ -1,0 +1,45 @@
+@entity
+@persistence(name='tn_sys_team')
+@name(label='球队', plural='teams')
+team<
+
+  @persistence(name='tmid')
+  @name(label='球队标识')
+  id!!: long,
+
+  @persistence(name='tmnm')
+  @name(label='队名')
+  name: string(100),
+
+  @persistence(name='lg')
+  @name(label='队徽')
+  logo: string(100)
+>
+
+@entity
+@persistence(name='tn_sys_match')
+@name(label='比赛', plural='matches')
+match<
+
+  @persistence(name='mttm')
+  @name(label='比赛时间')
+  match_time!!: datetime,
+
+  @persistence(name='hmid')
+  @name(label='主队')
+  @eager
+  home!!: &team(id),
+
+  @persistence(name='hmsc')
+  @name(label='主队得分')
+  home_score: int,
+
+  @persistence(name='awyid')
+  @name(label='客队')
+  @eager
+  away!!: &team(id),
+
+  @persistence(name='awysc')
+  @name(label='客队得分')
+  away_score: int
+>
