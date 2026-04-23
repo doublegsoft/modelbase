@@ -382,7 +382,6 @@ public class Modelbase extends BaseErrorListener {
       PrimitiveType type = new PrimitiveType(PrimitiveType.STRING);
       attr.setType(type);
       ctx.typebase_enum().typebase_keytext().forEach(kt -> {
-//        String key = kt.key1 == null ? kt.key2.getText() : kt.key1.getText();
         String key = kt.anybase_key().getText();
         if (kt.text == null) {
           attr.getConstraint().addCheckValue(new String[]{key, kt.name.getText()});
