@@ -59,9 +59,12 @@ public class CompositeRowBuilderTest extends ModelbaseTestBase {
       System.out.println("  " + qualAttr.getAlias() + "." + qualAttr.getSnakeCaseQualifiedName(dataModel));
     }
     System.out.println("left join: ");
-    for (QualifiedAttributeDefinition[] pair : compositeRow.getPairedQualifiedAttributes()) {
-      System.out.println("  " + pair[0].getAlias() + "." + pair[0].getSnakeCaseQualifiedName(dataModel) +
-          " = " + pair[1].getAlias() + "." + pair[1].getSnakeCaseQualifiedName(dataModel));
+    for (JoinConditionDefinition condition : compositeRow.getJoinTree().getJoinConditions()) {
+      for (JoinPredicateDefinition predicate : condition.getJoinPredicates()) {
+        System.out.println("  " + predicate.getLeftObjectAlias() + "." + predicate.getLeftAttribute().getName() +
+            " = " + predicate.getRightObjectAlias() + "." + predicate.getRightAttribute().getName());
+      }
+
     }
   }
 

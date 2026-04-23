@@ -38,11 +38,12 @@ public class CompositeRowBuilder {
       if (attr.getType().isCustom() && attr.isLabelled("eager")) {
         ObjectDefinition referencedObjByAttr = dataModel.findObjectByName(attr.getType().getName());
         // 创建关联关系
-        QualifiedAttributeDefinition dummyAttr = new QualifiedAttributeDefinition(alias, attr);
-        compositeRow.addPairedQualifiedAttributes(
-            dummyAttr,
-            new QualifiedAttributeDefinition(attr.getName(), referencedObjByAttr.getIdentifiableAttribute())
-        );
+        compositeRow.addJoinPredicate(alias, attr, attr.getName(), referencedObjByAttr.getIdentifiableAttribute());
+//        QualifiedAttributeDefinition dummyAttr = new QualifiedAttributeDefinition(alias, attr);
+//        compositeRow.addPairedQualifiedAttributes(
+//            dummyAttr,
+//            new QualifiedAttributeDefinition(attr.getName(), referencedObjByAttr.getIdentifiableAttribute())
+//        );
       }
     }
     for (AttributeDefinition attr : dataObj.getAttributes()) {
