@@ -39,11 +39,6 @@ public class CompositeRowBuilder {
         ObjectDefinition referencedObjByAttr = dataModel.findObjectByName(attr.getType().getName());
         // 创建关联关系
         compositeRow.addJoinPredicate(alias, attr, attr.getName(), referencedObjByAttr.getIdentifiableAttribute());
-//        QualifiedAttributeDefinition dummyAttr = new QualifiedAttributeDefinition(alias, attr);
-//        compositeRow.addPairedQualifiedAttributes(
-//            dummyAttr,
-//            new QualifiedAttributeDefinition(attr.getName(), referencedObjByAttr.getIdentifiableAttribute())
-//        );
       }
     }
     for (AttributeDefinition attr : dataObj.getAttributes()) {
