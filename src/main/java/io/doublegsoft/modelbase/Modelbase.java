@@ -699,6 +699,9 @@ public class Modelbase extends BaseErrorListener {
 
   private void propagateObject(ObjectDefinition original, ObjectDefinition propagated) {
     for (AttributeDefinition attr : original.getAttributes()) {
+      if (propagated.getAttribute(attr.getName()) != null) {
+        continue;
+      }
       AttributeDefinition clonedAttr = attr.clone(propagated);
       clonedAttr.setLabelledOption("original", "object", original.getName());
       clonedAttr.setLabelledOption("original", "attribute", attr.getName());
