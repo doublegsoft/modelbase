@@ -697,16 +697,13 @@ public class Modelbase extends BaseErrorListener {
     }
   }
 
-  private void propagateObject(ObjectDefinition original, ObjectDefinition propagated) {
+  private void propagateObject(ObjectDefinition original, ObjectDefinition newly) {
     for (AttributeDefinition attr : original.getAttributes()) {
-      if (propagated.getAttribute(attr.getName()) != null) {
-        continue;
-      }
-      AttributeDefinition clonedAttr = attr.clone(propagated);
+      AttributeDefinition clonedAttr = attr.clone(newly);
       clonedAttr.setLabelledOption("original", "object", original.getName());
       clonedAttr.setLabelledOption("original", "attribute", attr.getName());
     }
-    for (AttributeDefinition propAttr : propagated.getAttributes()) {
+    for (AttributeDefinition propAttr : newly.getAttributes()) {
       boolean existing = false;
       for (AttributeDefinition origAttr : original.getAttributes()) {
         if (origAttr.getName().equals(propAttr.getName())) {
