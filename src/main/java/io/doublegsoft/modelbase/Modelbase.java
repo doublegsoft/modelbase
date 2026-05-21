@@ -643,14 +643,17 @@ public class Modelbase extends BaseErrorListener {
         String master = obj.getLabelledOptions("pivot").get("master");
         ObjectDefinition masterObj = model.findObjectByName(master);
         propagateObject(masterObj, obj);
+        obj.setLabelledOption("original", "object", masterObj.getName());
       } else if ((obj.isLabelled("meta") && obj.getLabelledOptions("meta").get("master") != null)) {
         String masterObjName = obj.getLabelledOptions("meta").get("master");
         ObjectDefinition masterObj = model.findObjectByName(masterObjName);
         propagateObject(masterObj, obj);
+        obj.setLabelledOption("original", "object", masterObj.getName());
       } else if (obj.isLabelled("extension")) {
         String master = obj.getLabelledOptions("extension").get("master");
         ObjectDefinition masterObj = model.findObjectByName(master);
         propagateObject(masterObj, obj);
+        obj.setLabelledOption("original", "object", masterObj.getName());
       }
     }
   }
@@ -658,10 +661,8 @@ public class Modelbase extends BaseErrorListener {
   private void propagateObject(ObjectDefinition original, ObjectDefinition newly) {
     for (AttributeDefinition attr : original.getAttributes()) {
       AttributeDefinition clonedAttr = attr.clone(newly);
-      if (!original.getName().equals(newly.getName()) /* 直接继承，名称相同 */) {
-        clonedAttr.setLabelledOption("original", "object", original.getName());
-        clonedAttr.setLabelledOption("original", "attribute", attr.getName());
-      }
+      clonedAttr.setLabelledOption("original", "object", original.getName());
+      clonedAttr.setLabelledOption("original", "attribute", attr.getName());
     }
     for (AttributeDefinition propAttr : newly.getAttributes()) {
       boolean existing = false;
