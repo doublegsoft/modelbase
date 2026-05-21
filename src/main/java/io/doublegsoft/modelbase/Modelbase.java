@@ -25,6 +25,7 @@ import com.doublegsoft.jcommons.metabean.ObjectDefinition;
 import com.doublegsoft.jcommons.metabean.RelationshipStyle;
 import com.doublegsoft.jcommons.metabean.ast.*;
 import com.doublegsoft.jcommons.metabean.type.*;
+import com.doublegsoft.jcommons.utils.Strings;
 import io.doublegsoft.modelbase.ModelbaseParser.Anybase_stringContext;
 import io.doublegsoft.modelbase.ModelbaseParser.Modelbase_typesContext;
 import io.doublegsoft.modelbase.ModelbaseParser.Typebase_anytypeContext;
@@ -661,6 +662,9 @@ public class Modelbase extends BaseErrorListener {
   private void propagateObject(ObjectDefinition original, ObjectDefinition newly) {
     for (AttributeDefinition attr : original.getAttributes()) {
       AttributeDefinition clonedAttr = attr.clone(newly);
+      if (Strings.in(attr.getName(), "id", "name", "text", "type", "code")) {
+        clonedAttr.setName(original.getName() + "_" + attr.getName());
+      }
       clonedAttr.setLabelledOption("original", "object", original.getName());
       clonedAttr.setLabelledOption("original", "attribute", attr.getName());
     }
