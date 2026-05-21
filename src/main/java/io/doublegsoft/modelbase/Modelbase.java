@@ -629,106 +629,89 @@ public class Modelbase extends BaseErrorListener {
         /*!
          ** 已经定义的对象。
          */
-        ObjectDefinition origobj = model.findObjectByName(origname);
-        obj.getLabelledOptions().putAll(origobj.getLabelledOptions());
+        ObjectDefinition origObj = model.findObjectByName(origname);
+        obj.getLabelledOptions().putAll(origObj.getLabelledOptions());
         obj.getLabelledOptions().remove("generated");
         obj.setName(origname);
-        obj.setPersistenceName(origobj.getPersistenceName());
-        obj.setModuleName(origobj.getModuleName());
-        obj.setAlias(origobj.getAlias());
-        obj.setPlural(origobj.getPlural());
-        /*!
-         ** 重新标注新定义的属性，区分已有的属性。
-         */
-        for (AttributeDefinition attr : obj.getAttributes()) {
-          attr.setLabelledOptions("redefined", new HashMap<>());
-        }
-        for (AttributeDefinition origattr : origobj.getAttributes()) {
-          boolean existing = false;
-          for (AttributeDefinition attr : obj.getAttributes()) {
-            if (attr.getName().equals(origattr.getName())) {
-              Map<String, Map<String, String>> opts = new HashMap<>();
-              for (Map.Entry<String, Map<String, String>> entry : origattr.getLabelledOptions().entrySet()) {
-                if (opts.containsKey(entry.getKey())) {
-                  Map<String,String> existings = opts.get(entry.getKey());
-                  existings.putAll(entry.getValue());
-                  opts.put(entry.getKey(), existings);
-                } else {
-                  opts.put(entry.getKey(), entry.getValue());
-                }
-              }
-              for (Map.Entry<String, Map<String, String>> entry : attr.getLabelledOptions().entrySet()) {
-                if (opts.containsKey(entry.getKey())) {
-                  Map<String,String> existings = opts.get(entry.getKey());
-                  existings.putAll(entry.getValue());
-                  opts.put(entry.getKey(), existings);
-                } else {
-                  opts.put(entry.getKey(), entry.getValue());
-                }
-              }
-              for (Map.Entry<String, Map<String, String>> entry : opts.entrySet()) {
-                attr.setLabelledOptions(entry.getKey(), entry.getValue());
-              }
-              attr.setPersistenceName(origattr.getPersistenceName());
-              existing = true;
-              break;
-            }
-          }
-          if (!existing) {
-            obj.addAttribute(origattr);
-          }
-        }
+        obj.setPersistenceName(origObj.getPersistenceName());
+        obj.setModuleName(origObj.getModuleName());
+        obj.setAlias(origObj.getAlias());
+        obj.setPlural(origObj.getPlural());
+        propagateObject(origObj, obj);
+//        /*!
+//         ** 重新标注新定义的属性，区分已有的属性。
+//         */
+//        for (AttributeDefinition attr : obj.getAttributes()) {
+//          attr.setLabelledOptions("redefined", new HashMap<>());
+//        }
+//        for (AttributeDefinition origAttr : origObj.getAttributes()) {
+//          boolean existing = false;
+//          for (AttributeDefinition attr : obj.getAttributes()) {
+//            if (attr.getName().equals(origAttr.getName())) {
+//              Map<String, Map<String, String>> opts = new HashMap<>();
+//              for (Map.Entry<String, Map<String, String>> entry : origAttr.getLabelledOptions().entrySet()) {
+//                if (opts.containsKey(entry.getKey())) {
+//                  Map<String,String> existings = opts.get(entry.getKey());
+//                  existings.putAll(entry.getValue());
+//                  opts.put(entry.getKey(), existings);
+//                } else {
+//                  opts.put(entry.getKey(), entry.getValue());
+//                }
+//              }
+//              for (Map.Entry<String, Map<String, String>> entry : attr.getLabelledOptions().entrySet()) {
+//                if (opts.containsKey(entry.getKey())) {
+//                  Map<String,String> existings = opts.get(entry.getKey());
+//                  existings.putAll(entry.getValue());
+//                  opts.put(entry.getKey(), existings);
+//                } else {
+//                  opts.put(entry.getKey(), entry.getValue());
+//                }
+//              }
+//              for (Map.Entry<String, Map<String, String>> entry : opts.entrySet()) {
+//                attr.setLabelledOptions(entry.getKey(), entry.getValue());
+//              }
+//              attr.setPersistenceName(origAttr.getPersistenceName());
+//              existing = true;
+//              break;
+//            }
+//          }
+//          if (!existing) {
+//            obj.addAttribute(origAttr);
+//          }
+//        }
       } else if (obj.isLabelled("pivot")) {
         String master = obj.getLabelledOptions("pivot").get("master");
-        if (master != null) {
-          ObjectDefinition masterObj = model.findObjectByName(master);
-          for (AttributeDefinition attr : masterObj.getAttributes()) {
-            obj.addAttribute(attr);
-          }
-        }
-        for (AttributeDefinition attr : obj.getAttributes()) {
-          AttributeDefinition realAttr = null;
-          if (master != null) {
-            realAttr = model.findAttributeByNames(master, attr.getName());
-          }
-          if (realAttr == null) {
-            attr.setLabelledOptions("redefined", new HashMap<>());
-          }
-        }
+        ObjectDefinition masterObj = model.findObjectByName(master);
+        propagateObject(masterObj, obj);
       } else if ((obj.isLabelled("meta") && obj.getLabelledOptions("meta").get("master") != null)) {
         String master = obj.getLabelledOptions("meta").get("master");
         if (master != null) {
           ObjectDefinition masterObj = model.findObjectByName(master);
-          for (AttributeDefinition attr : masterObj.getAttributes()) {
-            obj.addAttribute(attr);
-          }
-        }
-        for (AttributeDefinition attr : obj.getAttributes()) {
-          AttributeDefinition realAttr = null;
-          if (master != null) {
-            realAttr = model.findAttributeByNames(master, attr.getName());
-          }
-          if (realAttr == null) {
-            attr.setLabelledOptions("redefined", new HashMap<>());
-          }
+          propagateObject(masterObj, obj);
         }
       } else if (obj.isLabelled("extension")) {
         String master = obj.getLabelledOptions("extension").get("master");
-        if (master != null) {
-          ObjectDefinition masterObj = model.findObjectByName(master);
-          for (AttributeDefinition attr : masterObj.getAttributes()) {
-            obj.addAttribute(attr);
-          }
+        ObjectDefinition masterObj = model.findObjectByName(master);
+        propagateObject(masterObj, obj);
+      }
+    }
+  }
+
+  private void propagateObject(ObjectDefinition original, ObjectDefinition propagated) {
+    for (AttributeDefinition attr : original.getAttributes()) {
+      AttributeDefinition clonedAttr = attr.clone(propagated);
+      clonedAttr.setLabelledOption("original", "object", original.getName());
+      clonedAttr.setLabelledOption("original", "attribute", attr.getName());
+    }
+    for (AttributeDefinition propAttr : propagated.getAttributes()) {
+      boolean existing = false;
+      for (AttributeDefinition origAttr : original.getAttributes()) {
+        if (origAttr.getName().equals(propAttr.getName())) {
+          existing = true;
         }
-        for (AttributeDefinition attr : obj.getAttributes()) {
-          AttributeDefinition realAttr = null;
-          if (master != null) {
-            realAttr = model.findAttributeByNames(master, attr.getName());
-          }
-          if (realAttr == null) {
-            attr.setLabelledOptions("redefined", new HashMap<>());
-          }
-        }
+      }
+      if (!existing) {
+        propAttr.setLabelledOptions("redefined", new HashMap<>());
       }
     }
   }
