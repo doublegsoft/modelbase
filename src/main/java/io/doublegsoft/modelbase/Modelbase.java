@@ -644,11 +644,9 @@ public class Modelbase extends BaseErrorListener {
         ObjectDefinition masterObj = model.findObjectByName(master);
         propagateObject(masterObj, obj);
       } else if ((obj.isLabelled("meta") && obj.getLabelledOptions("meta").get("master") != null)) {
-        String master = obj.getLabelledOptions("meta").get("master");
-        if (master != null) {
-          ObjectDefinition masterObj = model.findObjectByName(master);
-          propagateObject(masterObj, obj);
-        }
+        String masterObjName = obj.getLabelledOptions("meta").get("master");
+        ObjectDefinition masterObj = model.findObjectByName(masterObjName);
+        propagateObject(masterObj, obj);
       } else if (obj.isLabelled("extension")) {
         String master = obj.getLabelledOptions("extension").get("master");
         ObjectDefinition masterObj = model.findObjectByName(master);
