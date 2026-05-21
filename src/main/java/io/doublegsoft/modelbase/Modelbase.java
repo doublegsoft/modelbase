@@ -624,7 +624,7 @@ public class Modelbase extends BaseErrorListener {
 
   private void processSpecialLabels(ModelDefinition model) {
     for (ObjectDefinition obj : model.getObjects()) {
-      if (obj.getName().endsWith("_")) {
+      if (obj.getName().endsWith("_") /* 直接继承 */) {
         String origname = obj.getName().substring(0, obj.getName().length() - 1);
         /*!
          ** 已经定义的对象。
@@ -638,48 +638,8 @@ public class Modelbase extends BaseErrorListener {
         obj.setAlias(origObj.getAlias());
         obj.setPlural(origObj.getPlural());
         propagateObject(origObj, obj);
-//        /*!
-//         ** 重新标注新定义的属性，区分已有的属性。
-//         */
-//        for (AttributeDefinition attr : obj.getAttributes()) {
-//          attr.setLabelledOptions("redefined", new HashMap<>());
-//        }
-//        for (AttributeDefinition origAttr : origObj.getAttributes()) {
-//          boolean existing = false;
-//          for (AttributeDefinition attr : obj.getAttributes()) {
-//            if (attr.getName().equals(origAttr.getName())) {
-//              Map<String, Map<String, String>> opts = new HashMap<>();
-//              for (Map.Entry<String, Map<String, String>> entry : origAttr.getLabelledOptions().entrySet()) {
-//                if (opts.containsKey(entry.getKey())) {
-//                  Map<String,String> existings = opts.get(entry.getKey());
-//                  existings.putAll(entry.getValue());
-//                  opts.put(entry.getKey(), existings);
-//                } else {
-//                  opts.put(entry.getKey(), entry.getValue());
-//                }
-//              }
-//              for (Map.Entry<String, Map<String, String>> entry : attr.getLabelledOptions().entrySet()) {
-//                if (opts.containsKey(entry.getKey())) {
-//                  Map<String,String> existings = opts.get(entry.getKey());
-//                  existings.putAll(entry.getValue());
-//                  opts.put(entry.getKey(), existings);
-//                } else {
-//                  opts.put(entry.getKey(), entry.getValue());
-//                }
-//              }
-//              for (Map.Entry<String, Map<String, String>> entry : opts.entrySet()) {
-//                attr.setLabelledOptions(entry.getKey(), entry.getValue());
-//              }
-//              attr.setPersistenceName(origAttr.getPersistenceName());
-//              existing = true;
-//              break;
-//            }
-//          }
-//          if (!existing) {
-//            obj.addAttribute(origAttr);
-//          }
-//        }
-      } else if (obj.isLabelled("pivot")) {
+      }
+      if (obj.isLabelled("pivot")) {
         String master = obj.getLabelledOptions("pivot").get("master");
         ObjectDefinition masterObj = model.findObjectByName(master);
         propagateObject(masterObj, obj);
@@ -700,8 +660,10 @@ public class Modelbase extends BaseErrorListener {
   private void propagateObject(ObjectDefinition original, ObjectDefinition newly) {
     for (AttributeDefinition attr : original.getAttributes()) {
       AttributeDefinition clonedAttr = attr.clone(newly);
-      clonedAttr.setLabelledOption("original", "object", original.getName());
-      clonedAttr.setLabelledOption("original", "attribute", attr.getName());
+      if (!original.getName().equals(newly.getName()) /* 直接继承，名称相同 */) {
+        clonedAttr.setLabelledOption("original", "object", original.getName());
+        clonedAttr.setLabelledOption("original", "attribute", attr.getName());
+      }
     }
     for (AttributeDefinition propAttr : newly.getAttributes()) {
       boolean existing = false;
