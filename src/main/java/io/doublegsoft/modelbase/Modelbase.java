@@ -638,22 +638,28 @@ public class Modelbase extends BaseErrorListener {
         obj.setModuleName(origObj.getModuleName());
         obj.setAlias(origObj.getAlias());
         obj.setPlural(origObj.getPlural());
-        propagateObject(origObj, obj);
+        propagateObject(origObj, obj, false);
       }
       if (obj.isLabelled("pivot")) {
-        String master = obj.getLabelledOptions("pivot").get("master");
-        ObjectDefinition masterObj = model.findObjectByName(master);
-        propagateObject(masterObj, obj);
+        String masterObjName = obj.getLabelledOptions("pivot").get("master");
+        ObjectDefinition masterObj = model.findObjectByName(masterObjName);
         obj.setLabelledOption("original", "object", masterObj.getName());
+        if (!masterObjName.equals(obj.getName()) /* 避免重复定义 */) {
+          propagateObject(masterObj, obj);
+        }
       } else if ((obj.isLabelled("meta") && obj.getLabelledOptions("meta").get("master") != null)) {
         String masterObjName = obj.getLabelledOptions("meta").get("master");
         ObjectDefinition masterObj = model.findObjectByName(masterObjName);
-        propagateObject(masterObj, obj);
+        if (!masterObjName.equals(obj.getName()) /* 避免重复定义 */) {
+          propagateObject(masterObj, obj);
+        }
         obj.setLabelledOption("original", "object", masterObj.getName());
       } else if (obj.isLabelled("extension")) {
-        String master = obj.getLabelledOptions("extension").get("master");
-        ObjectDefinition masterObj = model.findObjectByName(master);
-        propagateObject(masterObj, obj);
+        String masterObjName = obj.getLabelledOptions("extension").get("master");
+        ObjectDefinition masterObj = model.findObjectByName(masterObjName);
+        if (!masterObjName.equals(obj.getName()) /* 避免重复定义 */) {
+          propagateObject(masterObj, obj);
+        }
         obj.setLabelledOption("original", "object", masterObj.getName());
         String detailObjNames = obj.getLabelledOption("extension", "details");
         if (detailObjNames != null) {
@@ -674,9 +680,23 @@ public class Modelbase extends BaseErrorListener {
   }
 
   private void propagateObject(ObjectDefinition original, ObjectDefinition newly) {
+    propagateObject(original, newly, true);
+  }
+
+  private void propagateObject(ObjectDefinition original, ObjectDefinition newly, boolean prefixed) {
+    boolean hasId = newly.getIdentifiableAttribute() != null;
     for (AttributeDefinition attr : original.getAttributes()) {
+      if (attr.getType().isCustom() && attr.isIdentifiable()) {
+        // 如果是一对一的关系，需要判断是否忽略（因为已经存在主对象）
+        if (newly.getAttribute(attr.getName() + "_id") != null) {
+          continue;
+        }
+      }
       AttributeDefinition clonedAttr = attr.clone(newly);
-      if (Strings.in(attr.getName(), "id", "name", "text", "type", "code")) {
+      if (hasId) {
+        clonedAttr.getConstraint().setIdentifiable(false);
+      }
+      if (Strings.in(attr.getName(), "id", "name", "text", "type", "code") && prefixed) {
         clonedAttr.setName(original.getName() + "_" + attr.getName());
       }
       clonedAttr.setLabelledOption("original", "object", original.getName());
