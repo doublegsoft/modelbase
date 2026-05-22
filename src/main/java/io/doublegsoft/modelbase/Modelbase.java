@@ -655,6 +655,20 @@ public class Modelbase extends BaseErrorListener {
         ObjectDefinition masterObj = model.findObjectByName(master);
         propagateObject(masterObj, obj);
         obj.setLabelledOption("original", "object", masterObj.getName());
+        String detailObjNames = obj.getLabelledOption("extension", "details");
+        if (detailObjNames != null) {
+          String[] names = detailObjNames.split(";");
+          for (String name : names) {
+            ObjectDefinition detailObj = null;
+            if (name.contains("(")) {
+              String objName = name.substring(0, name.indexOf("("));
+              detailObj = model.findObjectByName(objName);
+            } else {
+              detailObj = model.findObjectByName(name);
+            }
+            propagateObject(detailObj, obj);
+          }
+        }
       }
     }
   }
