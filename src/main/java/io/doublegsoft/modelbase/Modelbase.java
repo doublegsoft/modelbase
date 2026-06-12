@@ -384,7 +384,7 @@ public class Modelbase extends BaseErrorListener {
       PrimitiveType type = new PrimitiveType(PrimitiveType.STRING);
       attr.setType(type);
       ctx.typebase_enum().typebase_keytext().forEach(kt -> {
-        String key = kt.anybase_key().getText();
+        String key = kt.name.getText();
         if (kt.text == null) {
           attr.getConstraint().addCheckValue(new String[]{key, kt.name.getText()});
         } else {
@@ -710,6 +710,7 @@ public class Modelbase extends BaseErrorListener {
         }
       }
       if (!existing) {
+        // 不存在原始对象中的属性被定义为redefine
         propAttr.setLabelledOptions("redefined", new HashMap<>());
       }
     }
