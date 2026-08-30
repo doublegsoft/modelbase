@@ -439,7 +439,7 @@ public class Modelbase extends BaseErrorListener {
       PrimitiveType type = new PrimitiveType("bit");
       attr.setType(type);
       if (ctx.typebase_bit().length != null) {
-        type.setLength(Integer.valueOf(ctx.typebase_byte().length.getText()));
+        type.setLength(Integer.valueOf(ctx.typebase_bit().length.getText()));
       }
     } else if (ctx.typebase_long() != null) {
       PrimitiveType type = new PrimitiveType(PrimitiveType.LONG);
