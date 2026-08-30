@@ -201,8 +201,8 @@ public class Modelbase extends BaseErrorListener {
               ObjectType objectType = attr.getType();
               collType.setComponentType(objectType);
               attr.setType(collType);
-              if (ctxAttr.counted_name != null) {
-                collType.setCountedName(ctxAttr.counted_name.getText());
+              if (ctxAttr.length_variable != null) {
+                collType.setLengthVariable(ctxAttr.length_variable.getText());
               }
             }
           }
@@ -316,8 +316,8 @@ public class Modelbase extends BaseErrorListener {
         type.setLength(Integer.valueOf(ctx.typebase_string().anybase_int().getText()));
         attr.getConstraint().setMaxSize(Integer.valueOf(ctx.typebase_string().anybase_int().getText()));
       }
-      if (ctx.typebase_string().length_name != null) {
-        type.setLengthName(ctx.typebase_string().length_name.getText());
+      if (ctx.typebase_string().length_variable != null) {
+        type.setLengthVariable(ctx.typebase_string().length_variable.getText());
       }
     } else if (ctx.typebase_strings() != null) {
       PrimitiveType type = new PrimitiveType(PrimitiveType.STRING);
@@ -432,6 +432,8 @@ public class Modelbase extends BaseErrorListener {
       attr.setType(type);
       if (ctx.typebase_byte().length != null) {
         type.setLength(Integer.valueOf(ctx.typebase_byte().length.getText()));
+      } else if (ctx.typebase_byte().length_variable != null) {
+        type.setLengthVariable(ctx.typebase_byte().length_variable.getText());
       }
     } else if (ctx.typebase_long() != null) {
       PrimitiveType type = new PrimitiveType(PrimitiveType.LONG);
@@ -461,6 +463,16 @@ public class Modelbase extends BaseErrorListener {
       CollectionType collType = new CollectionType("");
       collType.setComponentType(compType);
       attr.setType(collType);
+      if (ctx.length != null) {
+        collType.setLength(Integer.valueOf(ctx.length.getText()));
+      } else if (ctx.length_variable != null) {
+        collType.setLengthVariable(ctx.length_variable.getText());
+      }
+      if (ctx.length1 != null) {
+        throw new UnsupportedOperationException("not support matrix");
+      } else if (ctx.length_variable1 != null) {
+        throw new UnsupportedOperationException("not support matrix");
+      }
     }
     
     //
@@ -504,6 +516,16 @@ public class Modelbase extends BaseErrorListener {
         CollectionType collType = new CollectionType("list");
         collType.setComponentType(customType);
         attr.setType(collType);
+        if (ctx.length != null) {
+          collType.setLength(Integer.valueOf(ctx.length.getText()));
+        } else if (ctx.length_variable != null) {
+          collType.setLengthVariable(ctx.length_variable.getText());
+        }
+        if (ctx.length1 != null) {
+          throw new UnsupportedOperationException("not support matrix");
+        } else if (ctx.length_variable1 != null) {
+          throw new UnsupportedOperationException("not support matrix");
+        }
         return;
       }
       attr.setType(customType);
