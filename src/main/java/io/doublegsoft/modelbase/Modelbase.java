@@ -435,6 +435,12 @@ public class Modelbase extends BaseErrorListener {
       } else if (ctx.typebase_byte().length_variable != null) {
         type.setLengthVariable(ctx.typebase_byte().length_variable.getText());
       }
+    } else if (ctx.typebase_bit() != null) {
+      PrimitiveType type = new PrimitiveType("bit");
+      attr.setType(type);
+      if (ctx.typebase_bit().length != null) {
+        type.setLength(Integer.valueOf(ctx.typebase_byte().length.getText()));
+      }
     } else if (ctx.typebase_long() != null) {
       PrimitiveType type = new PrimitiveType(PrimitiveType.LONG);
       attr.setType(type);
