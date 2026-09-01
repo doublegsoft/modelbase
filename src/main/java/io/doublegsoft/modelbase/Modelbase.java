@@ -299,16 +299,15 @@ public class Modelbase extends BaseErrorListener {
       attr.getConstraint().setNullable(false);
     }
     boolean array = ctx.array != null;
-    if (ctx.reftype != null) {
+    if (ctx.typebase_refobj() != null) {
       if (!isProcessingBx) {
         precollectedCustomTypes.put(attr, new Object[]{ctx, array});
       } else {
         DomainType domainType = new DomainType(ctx.getText());
         domainType.setArray(array);
-        domainType.setName(ctx.reftype.getText());
+        domainType.setName(ctx.typebase_refobj().reftype.getText());
         attr.setType(domainType);
       }
-      // see #setCustomTypes
     } else if (ctx.typebase_string() != null) {
       PrimitiveType type = new PrimitiveType(PrimitiveType.STRING);
       attr.setType(type);
@@ -505,16 +504,16 @@ public class Modelbase extends BaseErrorListener {
       Typebase_anytypeContext ctx = (Typebase_anytypeContext) entry.getValue()[0];
       boolean array = (boolean) entry.getValue()[1];
 
-      ObjectDefinition refObj = model.findObjectByName(ctx.reftype.getText());
+      ObjectDefinition refObj = model.findObjectByName(ctx.typebase_refobj().reftype.getText());
       if (refObj == null) {
-        throw new NullPointerException(attr.getParent().getName() + "[" + attr.getName() + "]: " + ctx.reftype.getText() + " object not found in model");
+        throw new NullPointerException(attr.getParent().getName() + "[" + attr.getName() + "]: " +
+            ctx.typebase_refobj().reftype.getText() + " object not found in model");
       }
-      CustomType customType = new CustomType(ctx.reftype.getText(), refObj);
+      CustomType customType = new CustomType(ctx.typebase_refobj().reftype.getText(), refObj);
 
-//      attr.addRelationship(refObj, RelationshipStyle.ONE_TO_ONE);
 
-      if (ctx.typebase_anybase_id() != null && ctx.typebase_anybase_id().size() > 0) {
-        attr.addRelationship(model.findAttributeByNames(refObj.getName(), ctx.typebase_anybase_id(0).getText()), RelationshipStyle.MANY_TO_ONE);
+      if (ctx.typebase_refobj().typebase_anybase_id() != null && ctx.typebase_refobj().typebase_anybase_id().size() > 0) {
+        attr.addRelationship(model.findAttributeByNames(refObj.getName(), ctx.typebase_refobj().typebase_anybase_id(0).getText()), RelationshipStyle.MANY_TO_ONE);
       } else {
         attr.addRelationship(refObj, RelationshipStyle.MANY_TO_ONE);
       }
