@@ -321,8 +321,6 @@ public class Modelbase extends BaseErrorListener {
     } else if (ctx.typebase_strings() != null) {
       PrimitiveType type = new PrimitiveType(PrimitiveType.STRING);
       attr.setType(type);
-      DomainType domainType = new DomainType("strings");
-      attr.getConstraint().setDomainType(domainType);
       type.setLength(Integer.valueOf(ctx.typebase_strings().anybase_int().getText()));
       attr.getConstraint().setMaxSize(Integer.valueOf(ctx.typebase_strings().anybase_int().getText()));
       if (ctx.typebase_strings().separator != null) {
@@ -333,8 +331,6 @@ public class Modelbase extends BaseErrorListener {
     } else if (ctx.typebase_json() != null) {
       PrimitiveType type = new PrimitiveType(PrimitiveType.STRING);
       attr.setType(type);
-      DomainType domainType = new DomainType("json");
-      attr.getConstraint().setDomainType(domainType);
       type.setObjectName(ctx.typebase_json().name.getText());
     } else if (ctx.typebase_code() != null) {
       PrimitiveType type = new PrimitiveType(PrimitiveType.STRING);
