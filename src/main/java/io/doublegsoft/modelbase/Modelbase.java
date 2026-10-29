@@ -326,8 +326,12 @@ public class Modelbase extends BaseErrorListener {
       if (ctx.typebase_strings().separator != null) {
         type.setSeparator(ctx.typebase_strings().separator.getText());
       } else {
-        type.setSeparator(",");
+        type.setSeparator(";");
       }
+    } else if (ctx.typebase_json() != null) {
+      PrimitiveType type = new PrimitiveType(PrimitiveType.STRING);
+      attr.setType(type);
+      type.setObjectName(ctx.typebase_json().name.getText());
     } else if (ctx.typebase_code() != null) {
       PrimitiveType type = new PrimitiveType(PrimitiveType.STRING);
       attr.setType(type);
